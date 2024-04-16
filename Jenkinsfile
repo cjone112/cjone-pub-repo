@@ -3,23 +3,24 @@ pipeline {
   stages {
     stage('git scm update') {
       steps {
-        git url: 'https://github.com/IaC-Source/echo-ip.git', branch: 'main'
+        git url: 'https://github.com/cjone112/cjone-pub-repo/tree/echo-ip-1', branch: 'echo-ip-1'
       }
     }
     stage('docker build and push') {
       steps {
         sh '''
-        docker build -t 192.168.1.10:8443/echo-ip .
-        docker push 192.168.1.10:8443/echo-ip
+        docker login -u S1sauVbDBA4NrJZhunNG -p QFzSO0phOYyOG8YQ 61840435-kr1-registry.container.nhncloud.com/cjone-test-reg
+        docker build -t 61840435-kr1-registry.container.nhncloud.com/cjone-test-reg/echo-ip .
+        docker push 61840435-kr1-registry.container.nhncloud.com/cjone-test-reg/echo-ip
         '''
       }
     }
     stage('deploy kubernetes') {
       steps {
         sh '''
-        kubectl create deployment pl-bulk-prod --image=192.168.1.10:8443/echo-ip
-        kubectl expose deployment pl-bulk-prod --type=LoadBalancer --port=8080 \
-                                               --target-port=80 --name=pl-bulk-prod-svc
+        export KUBECONFIG=/var/lib/jenkins/cjone-kube-test_kubeconfig.yaml
+        kubectl create deployment fs-echo-ip --image=61840435-kr1-registry.container.nhncloud.com/cjone-test-reg/echo-ip
+        kubectl expose deployment fs-echo-ip --type=LoadBalancer --name=pl-echo-ip-svc --port=8080 --target-port=80
         '''
       }
     }
