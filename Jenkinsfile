@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('git scm update') {
       steps {
-        git url: 'https://github.com/cjone112/cjone-pub-repo/tree/echo-ip-1', branch: 'echo-ip-1'
+        git url: 'https://github.com/cjone112/cjone-pub-repo', branch: 'main'
       }
     }
     stage('docker build and push') {
