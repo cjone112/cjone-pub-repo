@@ -27,17 +27,6 @@ pipeline {
     }
   }
   stages {
-    stage('define tag'){
-      steps {
-        script {
-          if(env.BUILD_NUMBER.toInteger() % 2 == 1){
-            env.tag = "blue"
-          } else {
-            env.tag = "green"
-          }
-        }
-      }
-    }
     stage('deploy configmap and deployment'){
       steps {
         container('kustomize'){
